@@ -28,7 +28,7 @@ const Carousel = ({ images }: CarouselProps) => {
           src={images[currentIndex]}
           width={1000}
           height={350}
-          className="w-full h-56 sm:h-80 md:h-96 object-cover transition-transform duration-500"
+          className="w-full h-64 sm:h-80 md:h-96 object-cover transition-transform duration-500"
           priority
         />
       </div>
