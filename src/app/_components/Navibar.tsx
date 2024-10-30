@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function Navibar() {
   return (
-    <nav className="flex justify-between px-10 py-4">
+    <nav className="fixed top-0 w-screen z-10 flex justify-between px-10 py-4 bg-[#00000046] ">
       <div>
         <h1> Logo</h1>
       </div>
