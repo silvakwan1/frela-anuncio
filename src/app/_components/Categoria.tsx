@@ -6,7 +6,7 @@ export function Categoria() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const cardWidth = 100;
   const [counter, setCounter] = useState(0);
-  const maxScroll = (carouselRef.current?.children.length || 0) - 6;
+  const maxScroll = (carouselRef.current?.children.length || 0) - 5;
 
   const handleNext = () => {
     if (carouselRef.current && counter < maxScroll) {
