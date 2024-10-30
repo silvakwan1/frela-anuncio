@@ -4,9 +4,11 @@ import { CardCategoria } from "./CardCategoria";
 
 export function Categoria() {
   const carouselRef = useRef<HTMLDivElement>(null);
-  const cardWidth = 100;
+  const cardWidth = 100; // Largura do card em pixels
   const [counter, setCounter] = useState(0);
-  const maxScroll = (carouselRef.current?.children.length || 0) - 3;
+  const totalCards = 9; // Total de cartões
+  const visibleCards = 3; // Número de cartões visíveis
+  const maxScroll = totalCards - visibleCards; // Limite de rolagem
 
   const handleNext = () => {
     if (carouselRef.current && counter < maxScroll) {
