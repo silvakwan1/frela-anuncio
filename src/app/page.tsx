@@ -10,7 +10,9 @@ export default function Home() {
         <div className=" mb-20">
           <Navibar />
         </div>
-        <Carousel images={images} />
+        <div className="px-4">
+          <Carousel images={images} />
+        </div>
       </header>
       <main>
         <div>
