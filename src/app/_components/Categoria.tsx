@@ -29,11 +29,11 @@ export function Categoria() {
   };
 
   return (
-    <div className="relative flex items-center overflow-hidden w-full px-8">
+    <div className="relative flex items-center overflow-hidden px-8">
       {counter > 0 && (
         <button
           onClick={handlePrev}
-          className="carousel-button prev absolute left-4"
+          className="carousel-button prev p-5 z-10 absolute left-4"
         >
           ❮
         </button>
@@ -58,7 +58,7 @@ export function Categoria() {
       {counter < maxScroll && (
         <button
           onClick={handleNext}
-          className="carousel-button next absolute right-4"
+          className="carousel-button next p-5 z-10 absolute right-4"
         >
           ❯
         </button>
