@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CardCampanha } from "./CardCampanha";
+import dotEnv from "dotenv";
 
 // Definição da interface para a promoção
 interface Promocao {
@@ -15,6 +16,8 @@ interface Promocao {
 
 function Campanha() {
   const [promocoes, setPromocoes] = useState<Promocao[]>([]);
+  dotEnv.config();
+  const url = process.env.NEXT_PUBLIC_URL;
 
   useEffect(() => {
     if (typeof window !== "undefined" && "geolocation" in navigator) {
@@ -30,7 +33,7 @@ function Campanha() {
   async function getData(latitude: number, longitude: number) {
     try {
       const response = await axios.get<Promocao[]>(
-        `http://localhost:3333/promocoes?latitude=${latitude}&longitude=${longitude}`
+        `${url}/promocoes?latitude=${latitude}&longitude=${longitude}`
       );
 
       // Converte o Buffer em Base64
