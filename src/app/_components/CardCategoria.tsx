@@ -13,7 +13,7 @@ export function CardCategoria({ alt, src, text }: propsCard) {
           src={src}
           width={100}
           height={100}
-          className="object-cover"
+          className="object-cover w-full"
           priority
         />
       </div>

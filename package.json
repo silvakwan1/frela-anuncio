@@ -11,8 +11,10 @@
   "dependencies": {
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
+    "embla-carousel-react": "^8.3.1",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
+    "react-carousel": "^4.3.0",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
     "swiper": "^11.1.14"
   },
