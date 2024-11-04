@@ -11,7 +11,7 @@ interface Promocao {
   image: {
     data: string; // Aqui, 'data' é o formato que o seu backend está enviando
   };
-  timeEnd: string; // Ajuste o tipo se necessário
+  dateEnd: string; // Ajuste o tipo se necessário
 }
 
 function Campanha() {
@@ -52,7 +52,7 @@ function Campanha() {
       console.error("Erro ao buscar promoções:", error);
     }
   }
-
+  console.log(promocoes);
   return (
     <div className="flex flex-wrap gap-4 justify-normal border-2 p-4 rounded-lg mx-auto shadow-inner-lg w-full">
       {promocoes.length > 0 ? (
@@ -60,8 +60,8 @@ function Campanha() {
           <CardCampanha
             key={index}
             Alt={promocao.title}
-            Src={promocao.image.data} // Corrigido para passar a string correta
-            timeEnd={promocao.timeEnd}
+            Src={promocao.image.data}
+            timeEnd={promocao.dateEnd}
             title={promocao.title}
           />
         ))
