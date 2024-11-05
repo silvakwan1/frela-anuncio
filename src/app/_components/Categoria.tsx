@@ -69,7 +69,11 @@ import { CardCategoria } from "./CardCategoria";
 import useEmblaCarousel from "embla-carousel-react";
 
 export function Categoria() {
-  const [emblaRef] = useEmblaCarousel({ loop: false });
+  const [emblaRef] = useEmblaCarousel({
+    loop: false,
+    skipSnaps: false, // evita o movimento de "rebote"
+    dragFree: true, // ativa o deslize livre
+  });
 
   return (
     <div className="embla w-full overflow-hidden" ref={emblaRef}>

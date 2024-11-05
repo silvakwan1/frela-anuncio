@@ -9,10 +9,10 @@ export default function Home() {
   return (
     <div>
       <header>
-        <div className="h-20">
+        <div className="h-16 ">
           <Navibar />
         </div>
-        <div className="px-4">
+        <div className="px-4 lg:px-0">
           <Carousel images={images} />
         </div>
       </header>
@@ -21,12 +21,13 @@ export default function Home() {
           <div className="flex justify-center">
             <h2>Categoria</h2>
           </div>
-          <div className="mt-4">
+          <div className="mt-4 px-4">
             <Categoria />
           </div>
         </div>
-
-        <Campanha />
+        <div className="px-4">
+          <Campanha />
+        </div>
       </main>
     </div>
   );
