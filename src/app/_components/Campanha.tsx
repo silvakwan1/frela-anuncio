@@ -1,11 +1,11 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { CardCampanha } from "./CardCampanha";
 import { CardDefoult } from "./CardDefoult";
 import { fetchPromocoesPorLocalizacao } from "../api/fetchPromocoesPorLocalizacao";
 import { fetchTodasPromocoes } from "../api/fetchTodasPromocoes";
 import { Promocao } from "../api/interfeces";
+import CardDetail from "./CardDetail";
 
 const getDate = (dateEnd: string): string => {
   const today = new Date();
@@ -19,6 +19,7 @@ const getDate = (dateEnd: string): string => {
 
 function Campanha() {
   const [promocoes, setPromocoes] = useState<Promocao[]>([]);
+  const [selectedPromo, setSelectedPromo] = useState<Promocao | null>(null); // Estado para o card selecionado
 
   useEffect(() => {
     if (typeof window !== "undefined" && "geolocation" in navigator) {
@@ -59,22 +60,51 @@ function Campanha() {
     }
   };
 
+  const handleCardClick = (promocao: Promocao) => {
+    setSelectedPromo(promocao); // Define a promoção selecionada
+  };
+
+  const closeDetail = () => {
+    setSelectedPromo(null); // Limpa a promoção selecionada
+  };
+
   return (
     <div className="flex flex-wrap gap-4 justify-normal border-2 p-4 rounded-lg mx-auto shadow-inner-lg w-full">
       {promocoes.length > 0 ? (
         promocoes.map((promocao, index) => (
-          <CardCampanha
+          <div
+            className="w-full"
             key={index}
-            Alt={promocao.title}
-            Src={`data:image/png;base64,${Buffer.from(
-              promocao.image.data
-            ).toString("base64")}`}
-            timeEnd={getDate(promocao.dateEnd)}
-            title={promocao.title}
-          />
+            onClick={() => handleCardClick(promocao)}
+          >
+            {/* Adiciona o manipulador de clique */}
+            <CardCampanha
+              Alt={promocao.title}
+              Src={`data:image/png;base64,${Buffer.from(
+                promocao.image.data
+              ).toString("base64")}`}
+              timeEnd={getDate(promocao.dateEnd)}
+              title={promocao.title}
+            />
+          </div>
         ))
       ) : (
         <CardDefoult />
+      )}
+
+      {/* Renderiza o CardDetail se uma promoção estiver selecionada */}
+      {selectedPromo && (
+        <CardDetail
+          title={selectedPromo.title}
+          imageSrc={`data:image/png;base64,${Buffer.from(
+            selectedPromo.image.data
+          ).toString("base64")}`}
+          timeEnd={getDate(selectedPromo.dateEnd)}
+          cupom={selectedPromo.cupom}
+          link={selectedPromo.link}
+          description={selectedPromo.description}
+          onClose={closeDetail}
+        />
       )}
     </div>
   );

@@ -105,20 +105,20 @@ const Carousel = ({ images }: CarouselProps) => {
   }, [emblaApi]);
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative z-0 overflow-hidden">
       <div className="embla" ref={emblaRef}>
         <div className="embla__container">
           {images.map((src, index) => (
             <div
               key={index}
-              className="embla__slide h-64 w-full bg-gray-200 flex items-center justify-center"
+              className="embla__slide h-64 lg:h-96 w-full bg-gray-200 flex items-center justify-center"
             >
               <Image
                 alt={`Slide ${index + 1}`}
                 src={src}
                 width={1000}
                 height={350}
-                className="w-full h-64 sm:h-80 md:h-96 object-cover transition-transform duration-500"
+                className="w-full h-64 sm:h-80 md:h-96 lg:h-96 object-cover transition-transform duration-500"
                 priority
               />
             </div>

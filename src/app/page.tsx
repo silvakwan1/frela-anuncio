@@ -1,6 +1,7 @@
 import Campanha from "./_components/Campanha";
 import Carousel from "./_components/Carousel";
 import { Categoria } from "./_components/Categoria";
+import { Footer } from "./_components/Footer";
 import { Navibar } from "./_components/Navibar";
 
 export default function Home() {
@@ -9,12 +10,9 @@ export default function Home() {
   return (
     <div>
       <header>
-        <div className="h-16 ">
-          <Navibar />
-        </div>
-        <div className="px-4 lg:px-0">
-          <Carousel images={images} />
-        </div>
+        <Navibar />
+
+        <Carousel images={images} />
       </header>
       <main className="flex flex-col gap-7 max-w-6xl lg:max-w-[70%] m-auto py-6">
         <div>
@@ -29,6 +27,7 @@ export default function Home() {
           <Campanha />
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

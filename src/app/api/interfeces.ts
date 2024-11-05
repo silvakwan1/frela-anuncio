@@ -4,4 +4,7 @@ export interface Promocao {
     data: string;
   };
   dateEnd: string;
+  link: string;
+  description: string;
+  cupom: string;
 }

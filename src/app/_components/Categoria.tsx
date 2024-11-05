@@ -71,8 +71,8 @@ import useEmblaCarousel from "embla-carousel-react";
 export function Categoria() {
   const [emblaRef] = useEmblaCarousel({
     loop: false,
-    skipSnaps: false, // evita o movimento de "rebote"
-    dragFree: true, // ativa o deslize livre
+    skipSnaps: false,
+    dragFree: true,
   });
 
   return (
@@ -93,6 +93,23 @@ export function Categoria() {
         </div>
         <div className="embla__slide flex-shrink-0 flex items-center justify-center ">
           <CardCategoria alt="Esportes" src="/run.svg" text="Esportes" />
+        </div>
+        <div className="embla__slide flex-shrink-0 flex items-center justify-center ">
+          <CardCategoria
+            alt="Alimentação"
+            src="/fastfood.svg"
+            text="Alimentação"
+          />
+        </div>
+        <div className="embla__slide flex-shrink-0 flex items-center justify-center ">
+          <CardCategoria
+            alt="Serviços"
+            src="/engineering.svg"
+            text="Serviços"
+          />
+        </div>
+        <div className="embla__slide flex-shrink-0 flex items-center justify-center ">
+          <CardCategoria alt="Lazer" src="/home.svg" text="Lazer" />
         </div>
         <div className="embla__slide flex-shrink-0 flex items-center justify-center ">
           <CardCategoria
