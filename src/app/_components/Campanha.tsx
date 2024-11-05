@@ -61,11 +61,11 @@ function Campanha() {
   };
 
   const handleCardClick = (promocao: Promocao) => {
-    setSelectedPromo(promocao); // Define a promoção selecionada
+    setSelectedPromo(promocao);
   };
 
   const closeDetail = () => {
-    setSelectedPromo(null); // Limpa a promoção selecionada
+    setSelectedPromo(null);
   };
 
   return (
@@ -77,7 +77,6 @@ function Campanha() {
             key={index}
             onClick={() => handleCardClick(promocao)}
           >
-            {/* Adiciona o manipulador de clique */}
             <CardCampanha
               Alt={promocao.title}
               Src={`data:image/png;base64,${Buffer.from(
@@ -92,7 +91,6 @@ function Campanha() {
         <CardDefoult />
       )}
 
-      {/* Renderiza o CardDetail se uma promoção estiver selecionada */}
       {selectedPromo && (
         <CardDetail
           title={selectedPromo.title}
