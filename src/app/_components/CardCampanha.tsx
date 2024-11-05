@@ -9,7 +9,7 @@ interface propsCard {
 
 export function CardCampanha({ Src, Alt, timeEnd, title }: propsCard) {
   return (
-    <div className="flex-shrink-0 h-64 w-full sm:w-64 md:w-60 lg:w-60 rounded-xl border-2 shadow-lg overflow-hidden">
+    <>
       <div className="h-48 w-full flex justify-center items-center bg-slate-950">
         <Image
           alt={Alt}
@@ -28,6 +28,6 @@ export function CardCampanha({ Src, Alt, timeEnd, title }: propsCard) {
           <p className="text-end text-red-400 text-sm">{timeEnd}</p>
         </div>
       </div>
-    </div>
+    </>
   );
 }

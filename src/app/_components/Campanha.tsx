@@ -73,7 +73,7 @@ function Campanha() {
       {promocoes.length > 0 ? (
         promocoes.map((promocao, index) => (
           <div
-            className="w-full"
+            className="flex-shrink-0 h-64  w-full sm:w-56 md:w-60 lg:w-72 rounded-xl border-2 shadow-lg overflow-hidden"
             key={index}
             onClick={() => handleCardClick(promocao)}
           >
