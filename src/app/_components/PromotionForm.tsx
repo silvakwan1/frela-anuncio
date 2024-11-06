@@ -1,5 +1,3 @@
-// PromotionForm.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -15,6 +13,7 @@ const PromotionForm = () => {
   const [includeLink, setIncludeLink] = useState(false);
   const [includeCupom, setIncludeCupom] = useState(false);
   const [includeLocation, setIncludeLocation] = useState(false);
+  const [categoria, setCategoria] = useState<string>(""); // Estado para categoria
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -38,7 +37,8 @@ const PromotionForm = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     if (!includeLink) formData.delete("link");
     if (!includeCupom) formData.delete("cupom");
@@ -46,6 +46,7 @@ const PromotionForm = () => {
       formData.set("latitude", latitude);
       formData.set("longitude", longitude);
     }
+    formData.set("categoria", categoria); // Inclui a categoria no formData
 
     try {
       const response = await axios.post(`${url}/post-promocao`, formData, {
@@ -56,7 +57,11 @@ const PromotionForm = () => {
 
       if (response.status === 201) {
         alert("Promoção salva com sucesso!");
-        event.currentTarget.reset();
+        form.reset();
+        setIncludeLink(false);
+        setIncludeCupom(false);
+        setIncludeLocation(false);
+        setCategoria(""); // Reseta a categoria após o envio
         getLocation();
       } else {
         alert("Erro ao salvar promoção");
@@ -73,7 +78,6 @@ const PromotionForm = () => {
       encType="multipart/form-data"
       className="mb-8"
     >
-      {/* Campos do formulário */}
       <div className="mb-4">
         <label htmlFor="dateStart" className="block font-bold mb-1">
           Data de Início:
@@ -113,7 +117,30 @@ const PromotionForm = () => {
         />
       </div>
 
-      {/* Checkbox para incluir o link */}
+      {/* Seletor de Categoria */}
+      <div className="mb-4">
+        <label htmlFor="categoria" className="block font-bold mb-1">
+          Categoria:
+        </label>
+        <select
+          id="categoria"
+          name="categoria"
+          value={categoria}
+          onChange={(e) => setCategoria(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded"
+          required
+        >
+          <option value="">Selecione a Categoria</option>
+          <option value="tecnologia">Tecnologia</option>
+          <option value="moda">Moda</option>
+          <option value="educacao">Educação</option>
+          <option value="esportes">Esportes</option>
+          <option value="alimentacao">Alimentação</option>
+          <option value="servicos">Serviços</option>
+          <option value="lazer">Lazer</option>
+        </select>
+      </div>
+
       <div className="mb-4">
         <label className="inline-flex items-center">
           <input
@@ -135,7 +162,6 @@ const PromotionForm = () => {
         )}
       </div>
 
-      {/* Checkbox para incluir o cupom */}
       <div className="mb-4">
         <label className="inline-flex items-center">
           <input
@@ -183,7 +209,6 @@ const PromotionForm = () => {
         />
       </div>
 
-      {/* Checkbox para usar latitude e longitude manual */}
       <div className="mb-4">
         <label className="inline-flex items-center">
           <input

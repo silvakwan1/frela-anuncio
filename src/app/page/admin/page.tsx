@@ -1,5 +1,6 @@
 import PromotionForm from "@/app/_components/PromotionForm";
 import PromotionList from "@/app/_components/PromotionList";
+import VipUsers from "@/app/_components/VipUsers";
 import React from "react";
 
 const AdminPage = () => {
@@ -10,6 +11,7 @@ const AdminPage = () => {
       </h1>
       <PromotionForm />
       <PromotionList />
+      <VipUsers />
     </div>
   );
 };

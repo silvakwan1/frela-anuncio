@@ -1,5 +1,5 @@
 export interface Promocao {
-  id: string;
+  _id: string;
   title: string;
   image: {
     data: string;
@@ -9,4 +9,12 @@ export interface Promocao {
   link: string;
   description: string;
   cupom: string;
+  categoria: string;
+}
+
+export interface VipUser {
+  _id: string;
+  nome: string;
+  email: string;
+  whatsApp: string;
 }

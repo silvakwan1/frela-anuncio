@@ -11,9 +11,9 @@ export function CardCategoria({ alt, src, text }: propsCard) {
         <Image
           alt={alt}
           src={src}
-          width={100}
-          height={100}
-          className="object-cover w-full"
+          width={50}
+          height={50}
+          className=" w-full"
           priority
         />
       </div>

@@ -10,7 +10,7 @@ interface propsCard {
 export function CardCampanha({ Src, Alt, timeEnd, title }: propsCard) {
   return (
     <>
-      <div className="h-48 w-full flex justify-center items-center bg-slate-950">
+      <div className="h-52 w-full flex justify-center items-center bg-slate-950">
         <Image
           alt={Alt}
           src={Src}

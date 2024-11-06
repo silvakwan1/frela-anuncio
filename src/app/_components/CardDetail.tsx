@@ -41,23 +41,20 @@ const CardDetail: React.FC<CardDetailProps> = ({
         />
         <div>
           <h2 className="text-2xl font-bold mb-4 text-red-500">{title}</h2>
-          <p className="font-sans">
-            {description} Lorem ipsum dolor sit amet consectetur adipisicing
-            elit. Sed molestias rem doloribus tempore delectus doloremque rerum
-            eveniet vel necessitatibus asperiores, qui enim, corporis voluptates
-            excepturi dolorem minima eum, eos obcaecati.
-          </p>
+          <p className="font-sans">{description}</p>
           <div className="mt-2">
-            {cupom && (
-              <p className="border-2 inline-block px-4 rounded-md mr-4">
-                cupom: <span className="text-red-500">{cupom}</span>
-              </p>
-            )}
-            {link && (
-              <Link className="underline text-blue-700" href={link}>
-                Ir para pagina
-              </Link>
-            )}
+            <div className="flex justify-between">
+              {cupom && (
+                <p className="border-2 inline-block px-4 rounded-md mr-4">
+                  cupom: <span className="text-red-500">{cupom}</span>
+                </p>
+              )}
+              {link && (
+                <Link className="underline text-blue-700 " href={link}>
+                  Ir para pagina
+                </Link>
+              )}{" "}
+            </div>
 
             <p className="text-lg  text-red-500 text-end">{timeEnd}</p>
           </div>

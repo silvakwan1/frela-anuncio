@@ -29,7 +29,7 @@ const Carousel = ({ images }: CarouselProps) => {
 
       const interval = setInterval(() => {
         scrollNext();
-      }, 3000);
+      }, 5000);
 
       return () => {
         window.removeEventListener("keydown", handleKeyDown);

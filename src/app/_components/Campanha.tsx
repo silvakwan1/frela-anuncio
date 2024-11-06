@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { CardCampanha } from "./CardCampanha";
 import { CardDefoult } from "./CardDefoult";
 import { fetchPromocoesPorLocalizacao } from "../api/fetchPromocoesPorLocalizacao";
@@ -10,16 +11,17 @@ import CardDetail from "./CardDetail";
 const getDate = (dateEnd: string): string => {
   const today = new Date();
   const endDate = new Date(dateEnd);
-
   const differenceInTime = endDate.getTime() - today.getTime();
   const differenceInDays = Math.ceil(differenceInTime / (1000 * 60 * 60 * 24));
-
   return `restam ${differenceInDays} dias`;
 };
 
 function Campanha() {
   const [promocoes, setPromocoes] = useState<Promocao[]>([]);
-  const [selectedPromo, setSelectedPromo] = useState<Promocao | null>(null); // Estado para o card selecionado
+  const [filteredPromocoes, setFilteredPromocoes] = useState<Promocao[]>([]);
+  const [selectedPromo, setSelectedPromo] = useState<Promocao | null>(null);
+  const searchParams = useSearchParams();
+  const categoria = searchParams.get("categoria");
 
   useEffect(() => {
     if (typeof window !== "undefined" && "geolocation" in navigator) {
@@ -37,17 +39,25 @@ function Campanha() {
     }
   }, []);
 
+  useEffect(() => {
+    if (categoria) {
+      setFilteredPromocoes(
+        promocoes.filter((promo) => promo.categoria === categoria)
+      );
+    } else {
+      setFilteredPromocoes(promocoes);
+    }
+  }, [categoria, promocoes]);
+
   const getPromocoes = async (latitude: number, longitude: number) => {
     try {
       const promocoes = await fetchPromocoesPorLocalizacao(latitude, longitude);
-      if (promocoes.length === 0) {
-        await buscarTodasPromocoes();
-      } else {
-        setPromocoes(promocoes);
-      }
+      setPromocoes(
+        promocoes.length > 0 ? promocoes : await fetchTodasPromocoes()
+      );
     } catch (error) {
       console.error("Erro ao buscar promoções:", error);
-      await buscarTodasPromocoes();
+      buscarTodasPromocoes();
     }
   };
 
@@ -60,20 +70,16 @@ function Campanha() {
     }
   };
 
-  const handleCardClick = (promocao: Promocao) => {
-    setSelectedPromo(promocao);
-  };
+  const handleCardClick = (promocao: Promocao) => setSelectedPromo(promocao);
 
-  const closeDetail = () => {
-    setSelectedPromo(null);
-  };
+  const closeDetail = () => setSelectedPromo(null);
 
   return (
     <div className="flex flex-wrap gap-4 justify-normal border-2 p-4 rounded-lg mx-auto shadow-inner-lg w-full">
-      {promocoes.length > 0 ? (
-        promocoes.map((promocao, index) => (
+      {filteredPromocoes.length > 0 ? (
+        filteredPromocoes.map((promocao, index) => (
           <div
-            className="flex-shrink-0 h-64  w-full sm:w-56 md:w-60 lg:w-72 rounded-xl border-2 shadow-lg overflow-hidden"
+            className="flex-shrink-0 h-72 w-full sm:w-56 md:w-60 lg:w-72 rounded-xl border-2 shadow-lg overflow-hidden"
             key={index}
             onClick={() => handleCardClick(promocao)}
           >
