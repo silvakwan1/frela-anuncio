@@ -16,13 +16,15 @@ export default function CampanhaFilter({
   const categoria = searchParams.get("categoria");
 
   useEffect(() => {
-    if (categoria) {
+    // Se a categoria não estiver definida, mostra todas as promoções
+    if (!categoria) {
+      onFilter(promocoes);
+    } else {
+      // Filtra as promoções pela categoria especificada
       const filtered = promocoes.filter(
         (promo) => promo.categoria === categoria
       );
       onFilter(filtered);
-    } else {
-      onFilter(promocoes);
     }
   }, [categoria, promocoes, onFilter]);
 
