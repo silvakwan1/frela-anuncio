@@ -1,12 +1,13 @@
+// Campanha.tsx
 "use client";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { CardCampanha } from "./CardCampanha";
 import { CardDefoult } from "./CardDefoult";
 import { fetchPromocoesPorLocalizacao } from "../api/fetchPromocoesPorLocalizacao";
 import { fetchTodasPromocoes } from "../api/fetchTodasPromocoes";
 import { Promocao } from "../api/interfeces";
 import CardDetail from "./CardDetail";
+import CampanhaFilter from "./CampanhaFilter";
 
 const getDate = (dateEnd: string): string => {
   const today = new Date();
@@ -20,8 +21,6 @@ function Campanha() {
   const [promocoes, setPromocoes] = useState<Promocao[]>([]);
   const [filteredPromocoes, setFilteredPromocoes] = useState<Promocao[]>([]);
   const [selectedPromo, setSelectedPromo] = useState<Promocao | null>(null);
-  const searchParams = useSearchParams();
-  const categoria = searchParams.get("categoria");
 
   useEffect(() => {
     if (typeof window !== "undefined" && "geolocation" in navigator) {
@@ -38,16 +37,6 @@ function Campanha() {
       buscarTodasPromocoes();
     }
   }, []);
-
-  useEffect(() => {
-    if (categoria) {
-      setFilteredPromocoes(
-        promocoes.filter((promo) => promo.categoria === categoria)
-      );
-    } else {
-      setFilteredPromocoes(promocoes);
-    }
-  }, [categoria, promocoes]);
 
   const getPromocoes = async (latitude: number, longitude: number) => {
     try {
@@ -76,6 +65,9 @@ function Campanha() {
 
   return (
     <div className="flex flex-wrap gap-4 justify-normal border-2 p-4 rounded-lg mx-auto shadow-inner-lg w-full">
+      {/* Componente de filtro */}
+      <CampanhaFilter promocoes={promocoes} onFilter={setFilteredPromocoes} />
+
       {filteredPromocoes.length > 0 ? (
         filteredPromocoes.map((promocao, index) => (
           <div
