@@ -1,6 +1,6 @@
 // Campanha.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { CardCampanha } from "./CardCampanha";
 import { CardDefoult } from "./CardDefoult";
 import { fetchPromocoesPorLocalizacao } from "../api/fetchPromocoesPorLocalizacao";
@@ -8,6 +8,7 @@ import { fetchTodasPromocoes } from "../api/fetchTodasPromocoes";
 import { Promocao } from "../api/interfeces";
 import CardDetail from "./CardDetail";
 import CampanhaFilter from "./CampanhaFilter";
+import Loading from "./Loading"; // Componente de carregamento
 
 const getDate = (dateEnd: string): string => {
   const today = new Date();
@@ -65,8 +66,10 @@ function Campanha() {
 
   return (
     <div className="flex flex-wrap gap-4 justify-normal border-2 p-4 rounded-lg mx-auto shadow-inner-lg w-full">
-      {/* Componente de filtro */}
-      <CampanhaFilter promocoes={promocoes} onFilter={setFilteredPromocoes} />
+      {/* Componente de filtro envolvido em Suspense */}
+      <Suspense fallback={<Loading />}>
+        <CampanhaFilter promocoes={promocoes} onFilter={setFilteredPromocoes} />
+      </Suspense>
 
       {filteredPromocoes.length > 0 ? (
         filteredPromocoes.map((promocao, index) => (
