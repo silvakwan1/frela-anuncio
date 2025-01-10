@@ -25,7 +25,9 @@ const VipUsers = () => {
 
   return (
     <div>
-      <h1>Lista de Usuários VIP</h1>
+      <h1 className="text-center my-3 py-2 border border-r-transparent border-l-transparent  border-b-stone-950 border-t-stone-950">
+        Lista de Usuários VIP
+      </h1>
       <button
         onClick={handleFetchUsers}
         className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
@@ -35,29 +37,30 @@ const VipUsers = () => {
 
       {loading && <p>Carregando...</p>}
       {error && <p>{error}</p>}
-
-      {users.length > 0 && (
-        <table className="min-w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="border px-4 py-2">#</th>
-              <th className="border px-4 py-2">Nome</th>
-              <th className="border px-4 py-2">Email</th>
-              <th className="border px-4 py-2">WhatsApp</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <tr key={user._id}>
-                <td className="border px-4 py-2">{index}</td>
-                <td className="border px-4 py-2">{user.nome}</td>
-                <td className="border px-4 py-2">{user.email}</td>
-                <td className="border px-4 py-2">{user.whatsApp}</td>
+      <div className=" overflow-auto">
+        {users.length > 0 && (
+          <table className="min-w-full border-collapse ">
+            <thead>
+              <tr>
+                <th className="border px-4 py-2">#</th>
+                <th className="border px-4 py-2">Nome</th>
+                <th className="border px-4 py-2">Email</th>
+                <th className="border px-4 py-2">WhatsApp</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {users.map((user, index) => (
+                <tr key={user.id}>
+                  <td className="border px-4 py-2">{index}</td>
+                  <td className="border px-4 py-2">{user.nome}</td>
+                  <td className="border px-4 py-2">{user.email}</td>
+                  <td className="border px-4 py-2">{user.whatsApp}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 };

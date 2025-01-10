@@ -1,6 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, FormEvent, ChangeEvent } from "react";
 import dotEnv from "dotenv";
 
 dotEnv.config();
@@ -13,45 +12,56 @@ interface UserData {
 }
 
 export function FormFooter() {
-  const [name, setName] = useState<string>("");
-  const [whatsapp, setWhatsapp] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+  const [formData, setFormData] = useState<UserData>({
+    nome: "",
+    whatsApp: "",
+    email: "",
+  });
+
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formattedWhatsapp = "+55" + whatsapp.replace(/\D/g, "");
-    console.log("Formatted WhatsApp:", formattedWhatsapp); // Log para verificar o WhatsApp formatado
-
-    const userData: UserData = {
-      nome: name,
-      whatsApp: formattedWhatsapp,
-      email: email,
-    };
-
-    console.log("User data sent:", userData);
+    const formattedWhatsapp = "+55" + formData.whatsApp.replace(/\D/g, "");
+    const userFormData = new FormData();
+    userFormData.append("nome", formData.nome);
+    userFormData.append("whatsApp", formattedWhatsapp);
+    userFormData.append("email", formData.email);
 
     try {
-      const response = await axios.post(`${url}/post-vipuser`, userData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(`${url}/create/vip-user`, {
+        method: "POST",
+        body: userFormData,
       });
 
-      if (response.status === 201) {
-        console.log("Usuário VIP cadastrado com sucesso:", response.data);
-        setName("");
-        setWhatsapp("");
-        setEmail("");
+      if (response.ok) {
+        setFormData({
+          nome: "",
+          whatsApp: "",
+          email: "",
+        });
         setErrorMessage("");
         setSuccessMessage("Mensagem enviada com sucesso!");
+      } else {
+        setErrorMessage(
+          "Este usuário já está cadastrado. Tente outro email ou número de WhatsApp."
+        );
+        setSuccessMessage("");
       }
     } catch (error) {
       console.error("Erro ao enviar os dados:", error);
       setErrorMessage(
-        "Este usuário já está cadastrado. Tente outro email ou número de WhatsApp."
+        "Erro ao enviar o formulário. Por favor, tente novamente."
       );
       setSuccessMessage("");
     }
@@ -68,33 +78,37 @@ export function FormFooter() {
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center w-full sm:w-1/2 p-4 space-y-4"
+        encType="multipart/form-data"
       >
         {errorMessage && (
           <div className="text-red-500 mb-2">{errorMessage}</div>
         )}
         {successMessage && (
-          <div className="text-green-500 mb-2">{successMessage}</div> // Exibir mensagem de sucesso
+          <div className="text-green-500 mb-2">{successMessage}</div>
         )}
         <input
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          name="nome"
+          value={formData.nome}
+          onChange={handleChange}
           placeholder="Nome"
           className="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400 text-black"
           required
         />
         <input
           type="text"
-          value={whatsapp}
-          onChange={(e) => setWhatsapp(e.target.value.replace(/\D/g, ""))} // Remover qualquer caractere não numérico
+          name="whatsApp"
+          value={formData.whatsApp}
+          onChange={handleChange}
           placeholder="WhatsApp (apenas números)"
           className="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400 text-black"
           required
         />
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
           placeholder="Email"
           className="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400 text-black"
           required

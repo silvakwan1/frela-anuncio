@@ -1,266 +1,310 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useState, ChangeEvent, FormEvent } from "react";
 import dotEnv from "dotenv";
-
 dotEnv.config();
 const url = process.env.NEXT_PUBLIC_URL as string;
 
-const PromotionForm = () => {
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [includeLink, setIncludeLink] = useState(false);
-  const [includeCupom, setIncludeCupom] = useState(false);
-  const [includeLocation, setIncludeLocation] = useState(false);
-  const [categoria, setCategoria] = useState<string>(""); // Estado para categoria
+interface FormDataState {
+  date_start: string;
+  date_end: string;
+  title: string;
+  link: string;
+  cupom: string;
+  description: string;
+  categoria: string;
+  latitude: string;
+  longitude: string;
+  image: File | null;
+}
 
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude.toString());
-          setLongitude(position.coords.longitude.toString());
-        },
-        (error) => {
-          console.error("Erro ao obter localização:", error);
-        }
-      );
-    } else {
-      alert("Geolocalização não é suportada neste navegador.");
-    }
+export default function PromotionForm() {
+  const [formData, setFormData] = useState<FormDataState>({
+    date_start: "",
+    date_end: "",
+    title: "",
+    link: "",
+    cupom: "",
+    description: "",
+    categoria: "",
+    latitude: "",
+    longitude: "",
+    image: null,
+  });
+
+  const categories = [
+    "tecnologia",
+    "moda",
+    "educacao",
+    "esportes",
+    "alimentacao",
+    "servicos",
+    "lazer",
+  ];
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, files } = e.target as HTMLInputElement;
+    setFormData({
+      ...formData,
+      [name]: files ? files[0] : value,
+    });
   };
 
-  useEffect(() => {
-    getLocation();
-  }, []);
+  const submitForm = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-
-    if (!includeLink) formData.delete("link");
-    if (!includeCupom) formData.delete("cupom");
-    if (!includeLocation) {
-      formData.set("latitude", latitude);
-      formData.set("longitude", longitude);
+    for (const key in formData) {
+      const value = formData[key as keyof FormDataState];
+      if (value !== null) {
+        form.append(key, value);
+      }
     }
-    formData.set("categoria", categoria); // Inclui a categoria no formData
 
     try {
-      const response = await axios.post(`${url}/post-promocao`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const response = await fetch(`${url}/create/promotion`, {
+        method: "POST",
+        body: form,
       });
 
-      if (response.status === 201) {
-        alert("Promoção salva com sucesso!");
-        form.reset();
-        setIncludeLink(false);
-        setIncludeCupom(false);
-        setIncludeLocation(false);
-        setCategoria(""); // Reseta a categoria após o envio
-        getLocation();
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(
+          "Promotion created successfully!\n" + JSON.stringify(result, null, 2)
+        );
+        setFormData({
+          date_start: "",
+          date_end: "",
+          title: "",
+          link: "",
+          cupom: "",
+          description: "",
+          categoria: "",
+          latitude: "",
+          longitude: "",
+          image: null,
+        });
       } else {
-        alert("Erro ao salvar promoção");
+        alert("Error: " + result.detail);
       }
     } catch (error) {
-      console.error("Erro ao enviar promoção:", error);
-      alert("Erro ao enviar promoção");
+      console.error("Error submitting form:", error);
+      alert("An unexpected error occurred.");
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      encType="multipart/form-data"
-      className="mb-8"
-    >
-      <div className="mb-4">
-        <label htmlFor="dateStart" className="block font-bold mb-1">
-          Data de Início:
-        </label>
-        <input
-          type="date"
-          id="dateStart"
-          name="dateStart"
-          required
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="dateEnd" className="block font-bold mb-1">
-          Data de Fim:
-        </label>
-        <input
-          type="date"
-          id="dateEnd"
-          name="dateEnd"
-          required
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="title" className="block font-bold mb-1">
-          Título:
-        </label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          required
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-      </div>
-
-      {/* Seletor de Categoria */}
-      <div className="mb-4">
-        <label htmlFor="categoria" className="block font-bold mb-1">
-          Categoria:
-        </label>
-        <select
-          id="categoria"
-          name="categoria"
-          value={categoria}
-          onChange={(e) => setCategoria(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
-          required
-        >
-          <option value="">Selecione a Categoria</option>
-          <option value="tecnologia">Tecnologia</option>
-          <option value="moda">Moda</option>
-          <option value="educacao">Educação</option>
-          <option value="esportes">Esportes</option>
-          <option value="alimentacao">Alimentação</option>
-          <option value="servicos">Serviços</option>
-          <option value="lazer">Lazer</option>
-        </select>
-      </div>
-
-      <div className="mb-4">
-        <label className="inline-flex items-center">
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+      <h1 className="text-3xl font-semibold text-center mb-6">
+        Criar Promoção
+      </h1>
+      <form
+        onSubmit={submitForm}
+        encType="multipart/form-data"
+        className="space-y-4"
+      >
+        <div>
+          <label
+            htmlFor="date_start"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Start Date
+          </label>
           <input
-            type="checkbox"
-            checked={includeLink}
-            onChange={() => setIncludeLink(!includeLink)}
-            className="mr-2"
+            type="date"
+            id="date_start"
+            name="date_start"
+            value={formData.date_start}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
-          Incluir Link
-        </label>
-        {includeLink && (
+        </div>
+
+        <div>
+          <label
+            htmlFor="date_end"
+            className="block text-sm font-medium text-gray-700"
+          >
+            End Date
+          </label>
+          <input
+            type="date"
+            id="date_end"
+            name="date_end"
+            value={formData.date_end}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="title"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="link"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Link
+          </label>
           <input
             type="url"
             id="link"
             name="link"
-            className="w-full p-2 border border-gray-300 rounded mt-2"
-            placeholder="Insira o link"
+            value={formData.link}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
-        )}
-      </div>
+        </div>
 
-      <div className="mb-4">
-        <label className="inline-flex items-center">
-          <input
-            type="checkbox"
-            checked={includeCupom}
-            onChange={() => setIncludeCupom(!includeCupom)}
-            className="mr-2"
-          />
-          Incluir Cupom
-        </label>
-        {includeCupom && (
+        <div>
+          <label
+            htmlFor="cupom"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Cupom
+          </label>
           <input
             type="text"
             id="cupom"
             name="cupom"
-            className="w-full p-2 border border-gray-300 rounded mt-2"
-            placeholder="Insira o cupom"
+            value={formData.cupom}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
-        )}
-      </div>
+        </div>
 
-      <div className="mb-4">
-        <label htmlFor="description" className="block font-bold mb-1">
-          Descrição:
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          required
-          className="w-full p-2 border border-gray-300 rounded"
-        ></textarea>
-      </div>
+        <div>
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Description
+          </label>
+          <textarea
+            required
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          ></textarea>
+        </div>
 
-      <div className="mb-4">
-        <label htmlFor="image" className="block font-bold mb-1">
-          Imagem:
-        </label>
-        <input
-          type="file"
-          id="image"
-          name="image"
-          accept="image/*"
-          required
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-      </div>
+        <div>
+          <label
+            htmlFor="categoria"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Category
+          </label>
+          <select
+            id="categoria"
+            name="categoria"
+            value={formData.categoria}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <option value="" disabled>
+              Categoria
+            </option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div className="mb-4">
-        <label className="inline-flex items-center">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="latitude"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Latitude
+            </label>
+            <input
+              type="number"
+              step="any"
+              id="latitude"
+              name="latitude"
+              placeholder="0 caso oline"
+              value={formData.latitude}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="longitude"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Longitude
+            </label>
+            <input
+              type="number"
+              step="any"
+              id="longitude"
+              name="longitude"
+              placeholder="0 caso oline"
+              value={formData.longitude}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            htmlFor="image"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Image
+          </label>
           <input
-            type="checkbox"
-            checked={includeLocation}
-            onChange={() => setIncludeLocation(!includeLocation)}
-            className="mr-2"
+            type="file"
+            id="image"
+            name="image"
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
-          Incluir Latitude e Longitude Manuais
-        </label>
-        {includeLocation && (
-          <>
-            <div className="mt-2">
-              <label htmlFor="latitude" className="block font-bold mb-1">
-                Latitude:
-              </label>
-              <input
-                type="text"
-                id="latitude"
-                name="latitude"
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Insira a latitude"
-              />
-            </div>
-            <div className="mt-2">
-              <label htmlFor="longitude" className="block font-bold mb-1">
-                Longitude:
-              </label>
-              <input
-                type="text"
-                id="longitude"
-                name="longitude"
-                value={longitude}
-                onChange={(e) => setLongitude(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Insira a longitude"
-              />
-            </div>
-          </>
-        )}
-      </div>
+        </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded"
-      >
-        Salvar Promoção
-      </button>
-    </form>
+        <div className="text-center">
+          <button
+            type="submit"
+            className="inline-block w-full px-6 py-3 text-white bg-indigo-600 font-medium text-sm leading-tight uppercase rounded-md shadow-md hover:bg-indigo-700 focus:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-150 ease-in-out"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
   );
-};
-
-export default PromotionForm;
+}

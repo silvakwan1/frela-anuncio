@@ -28,5 +28,5 @@ export default function CampanhaFilter({
     }
   }, [categoria, promocoes, onFilter]);
 
-  return null; // Este componente não precisa renderizar nada.
+  return null; 
 }

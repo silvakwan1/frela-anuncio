@@ -26,7 +26,7 @@ const PromotionList = () => {
       const response = await axios.delete(`${url}/promocoes/delete/${id}`);
       if (response.status === 200) {
         alert("Promoção excluída com sucesso!");
-        setPromotions(promotions.filter((promo) => promo._id !== id));
+        setPromotions(promotions.filter((promo) => promo.id !== id));
       } else {
         alert("Erro ao excluir a promoção.");
       }
@@ -53,8 +53,8 @@ const PromotionList = () => {
         ) : (
           promotions.map((promo) => (
             <div
-              key={promo._id}
-              className="promotion border border-gray-300 p-4 mb-2 rounded"
+              key={promo.id}
+              className="promotion border border-gray-300 p-4 mb-2 rounded overflow-hidden "
             >
               <h2 className="font-bold">{promo.title}</h2>
               <p>
@@ -65,7 +65,12 @@ const PromotionList = () => {
               </p>
               <p>
                 <strong>Link:</strong>{" "}
-                <a href={promo.link} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={promo.link}
+                  target="_blank"
+                  className="text-ellipsis w-full"
+                  rel="noopener noreferrer"
+                >
                   {promo.link}
                 </a>
               </p>
@@ -76,7 +81,7 @@ const PromotionList = () => {
                 <strong>Descrição:</strong> {promo.description}
               </p>
               <button
-                onClick={() => deletePromocao(promo._id)}
+                onClick={() => deletePromocao(promo.id)}
                 className="bg-red-500 text-white py-1 px-2 mt-2 rounded"
               >
                 Excluir Promoção

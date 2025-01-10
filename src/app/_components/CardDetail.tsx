@@ -35,8 +35,10 @@ const CardDetail: React.FC<CardDetailProps> = ({
         <Image
           src={imageSrc}
           alt={title}
-          height={100}
-          width={100}
+          height={1000}
+          width={1000}
+          quality={100}
+          priority
           className="mb-4 max-h-96 h-full w-full rounded-md"
         />
         <div>

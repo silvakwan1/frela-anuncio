@@ -1,9 +1,7 @@
 export interface Promocao {
-  _id: string;
+  id: string;
   title: string;
-  image: {
-    data: string;
-  };
+  image: string;
   dateStart: string;
   dateEnd: string;
   link: string;
@@ -13,7 +11,7 @@ export interface Promocao {
 }
 
 export interface VipUser {
-  _id: string;
+  id: string;
   nome: string;
   email: string;
   whatsApp: string;

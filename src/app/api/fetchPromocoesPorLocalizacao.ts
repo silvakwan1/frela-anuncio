@@ -10,7 +10,8 @@ export async function fetchPromocoesPorLocalizacao(
   longitude: number
 ): Promise<Promocao[]> {
   const response = await axios.get<Promocao[]>(
-    `${url}/promocoes/geolocalizacao?latitude=${latitude}&longitude=${longitude}`
+    `${url}/promotions/location?latitude=${latitude}&longitude=${longitude}&radius=200.0`
   );
+
   return response.data;
 }

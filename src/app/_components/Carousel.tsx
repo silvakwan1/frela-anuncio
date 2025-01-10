@@ -1,15 +1,15 @@
 "use client";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 
 interface CarouselProps {
   images: string[];
 }
 
-import React, { useEffect } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-
 const Carousel = ({ images }: CarouselProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [isMounted, setIsMounted] = useState(false); // Para garantir que o carrossel só seja renderizado após a montagem
 
   const scrollPrev = () => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -20,6 +20,8 @@ const Carousel = ({ images }: CarouselProps) => {
   };
 
   useEffect(() => {
+    setIsMounted(true); // A montagem está completa
+
     if (emblaApi) {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === "ArrowLeft") scrollPrev();
@@ -37,6 +39,10 @@ const Carousel = ({ images }: CarouselProps) => {
       };
     }
   }, [emblaApi]);
+
+  if (!isMounted) {
+    return null; // Enquanto o componente não estiver montado, não renderize o carrossel
+  }
 
   return (
     <div className="relative z-0 overflow-hidden">

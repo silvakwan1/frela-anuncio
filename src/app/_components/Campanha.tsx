@@ -1,4 +1,3 @@
-// Campanha.tsx
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { CardCampanha } from "./CardCampanha";
@@ -8,7 +7,7 @@ import { fetchTodasPromocoes } from "../api/fetchTodasPromocoes";
 import { Promocao } from "../api/interfeces";
 import CardDetail from "./CardDetail";
 import CampanhaFilter from "./CampanhaFilter";
-import Loading from "./Loading"; // Componente de carregamento
+import Loading from "./Loading";
 
 const getDate = (dateEnd: string): string => {
   const today = new Date();
@@ -22,12 +21,17 @@ function Campanha() {
   const [promocoes, setPromocoes] = useState<Promocao[]>([]);
   const [filteredPromocoes, setFilteredPromocoes] = useState<Promocao[]>([]);
   const [selectedPromo, setSelectedPromo] = useState<Promocao | null>(null);
+  const url = process.env.NEXT_PUBLIC_URL as string;
 
   useEffect(() => {
     if (typeof window !== "undefined" && "geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          getPromocoes(position.coords.latitude, position.coords.longitude);
+          if (!position.coords.latitude) {
+            buscarTodasPromocoes();
+          } else {
+            getPromocoes(position.coords.latitude, position.coords.longitude);
+          }
         },
         (error) => {
           console.error(error);
@@ -66,38 +70,37 @@ function Campanha() {
 
   return (
     <div className="flex flex-wrap gap-4 justify-normal border-2 p-4 rounded-lg mx-auto shadow-inner-lg w-full">
-      {/* Componente de filtro envolvido em Suspense */}
       <Suspense fallback={<Loading />}>
         <CampanhaFilter promocoes={promocoes} onFilter={setFilteredPromocoes} />
       </Suspense>
 
+      {/* Verificar se existem promoções filtradas */}
       {filteredPromocoes.length > 0 ? (
         filteredPromocoes.map((promocao, index) => (
           <div
-            className="flex-shrink-0 h-72 w-full sm:w-56 md:w-60 lg:w-72 rounded-xl border-2 shadow-lg overflow-hidden"
+            className="flex-shrink-0 h-80 w-full sm:w-56 md:w-60 lg:w-72 rounded-xl border-2 shadow-lg overflow-hidden opacity-0 animate-fade-in transition-opacity duration-500"
             key={index}
             onClick={() => handleCardClick(promocao)}
           >
             <CardCampanha
               Alt={promocao.title}
-              Src={`data:image/png;base64,${Buffer.from(
-                promocao.image.data
-              ).toString("base64")}`}
+              Src={`${url}/${promocao.image.replace(/\\/g, "/")}`}
               timeEnd={getDate(promocao.dateEnd)}
               title={promocao.title}
             />
           </div>
         ))
       ) : (
-        <CardDefoult />
+        // Mensagem quando não há promoções
+        <div className="w-full text-center text-xl text-gray-500 opacity-0 animate-fade-in transition-opacity duration-500">
+          Nenhuma promoção encontrada.
+        </div>
       )}
 
       {selectedPromo && (
         <CardDetail
           title={selectedPromo.title}
-          imageSrc={`data:image/png;base64,${Buffer.from(
-            selectedPromo.image.data
-          ).toString("base64")}`}
+          imageSrc={`${url}/${selectedPromo.image.replace(/\\/g, "/")}`}
           timeEnd={getDate(selectedPromo.dateEnd)}
           cupom={selectedPromo.cupom}
           link={selectedPromo.link}
