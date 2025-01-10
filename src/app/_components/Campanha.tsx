@@ -1,7 +1,6 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { CardCampanha } from "./CardCampanha";
-import { CardDefoult } from "./CardDefoult";
 import { fetchPromocoesPorLocalizacao } from "../api/fetchPromocoesPorLocalizacao";
 import { fetchTodasPromocoes } from "../api/fetchTodasPromocoes";
 import { Promocao } from "../api/interfeces";
